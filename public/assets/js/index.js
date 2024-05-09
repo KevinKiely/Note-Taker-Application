@@ -36,6 +36,7 @@ const getNotes = () =>
     }
   });
 
+// THIS IS WHERE THINGS ARE GOING WRONG, do we have to recall the getandRenderNotes function??
 const saveNote = (newNote) =>
   fetch('/api/notes', {
     method: 'POST',
