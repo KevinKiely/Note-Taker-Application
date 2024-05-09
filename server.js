@@ -1,16 +1,20 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+const {
+    readFromFile,
+    readAndAppend,
+    writeToFile,
+  } = require('./helpers/fsUtils');
+
 
 
 // Port, add || additional port once server is live on Heroku
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Initialize Express
 const app = express();
-
-// Helper function to assign random ID's to each note
-const uuid = require('./helpers/uuid');
 
 
 // Middleware
@@ -29,19 +33,23 @@ app.get('/notes', (req, res) =>
 );
 
 // GET api/notes should read db.json and return all saved notes as JSON
-app.get('/api/notes', async (req, res) => {
-    const dbJson = await JSON.parse(fs.readFileSync("db/db.json", "utf8"));
-    res.json(dbJson);
+app.get('/api/notes', (req, res) => { 
+    readFromFile("db/db.json").then((notes) => {
+        const dbJson= JSON.parse(notes);
+        res.json(dbJson);
+
+
+    });
 });
 
 
 
 // POST api/notes should receive a new note to save in the request body, add it to 'db.json', and then return the new note to the client. Each note must have a unique ID, find an npm package that can do this for you
 
-/*
+
 // POST request to add a new Note
 app.post('/api/notes', (req, res) => {
-    console.info(`${req.method} request received to add a new Note`);
+    console.log(`${req.method} request received to add a new Note`);
   
     // Destructuring assignment for the items in req.body
     const { title, text } = req.body;
@@ -52,35 +60,37 @@ app.post('/api/notes', (req, res) => {
       const newNote = {
         title,
         text,
-        note_id: uuid(),
+        id: uuidv4(),
       };
   
       // Obtain existing Notes
-      fs.readFile('./db/db.json', 'utf8', (err, data) => {
+      fs.readFile('db/db.json', 'utf8', (err, data) => {
         if (err) {
           console.error(err);
         } else {
           // Convert string into JSON object
           const parsedNotes = JSON.parse(data);
+          
   
           // Add a new review
           parsedNotes.unshift(newNote);
   
+            console.log(parsedNotes);
+
           // Write updated Notes back to the file
-          fs.writeFile( parsedNotes,
-            './db/db.json',
-            JSON.stringify(, null, 4),
+          fs.writeFile('db/db.json',
+            JSON.stringify(parsedNotes, null),
             (writeErr) =>
               writeErr
                 ? console.error(writeErr)
-                : console.info('Successfully updated notes')
+                : console.log('Successfully updated notes')
           );
         }
       });
   
       const response = {
         status: 'success',
-        body: newReview,
+        body: newNote,
       };
   
       console.log(response);
@@ -89,7 +99,7 @@ app.post('/api/notes', (req, res) => {
       res.status(500).json('Error in posting review');
     }
   });
-  */
+  
 
 // Catch
 app.get('*', (req, res) =>
@@ -100,4 +110,3 @@ app.get('*', (req, res) =>
 app.listen(PORT, () =>
     console.log(`App listening at http://localhost:${PORT}`)
 );
-
