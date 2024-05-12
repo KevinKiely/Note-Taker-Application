@@ -15,10 +15,11 @@
 This application was developed as a way to effectively write and save notes to help organize your list of tasks/priorities. It was a practice of using express and implementing GET and POST routes. Functionality will be added later to allow for deleting notes from the database.
 
 ## Screenshot
-![N/A](N/A)
+![Screenshot](https://github.com/KevinKiely/Note-Taker-Application/assets/153389427/9ec680a8-0790-4387-a695-4f28a1f61e64)
+
 
 ## Deployed Application URL
-N/A
+https://note-taker-3000-d533bc2b778c.herokuapp.com/notes
 
 ## Dependencies
 Express, Node, uuid
